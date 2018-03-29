@@ -86,6 +86,7 @@ window.onload = function() {
   const ui = SwaggerUIBundle({
     url: options.app_url + options.url,
     dom_id: '#swagger-ui',
+	validatorUrl: undefined,
     deepLinking: true,
     presets: [
       SwaggerUIBundle.presets.apis,
@@ -97,10 +98,44 @@ window.onload = function() {
     layout: "StandaloneLayout"
   })
 
+      function getApiKeyAuthorization() {
+      var key = $('#input_apiKey')[0].value;
+
+      if (key && key.trim() != "") {
+        if (options.api_auth == 'basic') {
+          key = "Basic " + Base64.encode(key);
+        } else if (options.api_auth == 'bearer') {
+          key = "Bearer " + key
+        }
+        return new SwaggerClient.ApiKeyAuthorization(options.api_key_name, key, options.api_key_type);
+      }
+    }
+
+    function addApiKeyAuthorization() {
+      var apiKeyAuthorization = getApiKeyAuthorization();
+      if (apiKeyAuthorization) {
+        window.swaggerUi.api.clientAuthorizations.add("key", apiKeyAuthorization);
+      }
+    }
+
+    $('#input_apiKey').change(addApiKeyAuthorization);
 
   window.ui = ui
 }
 </script>
+  <style>
+    input#input_baseUrl, a#explore.exploreBtn {
+      <% if GrapeSwaggerRails.options.hide_url_input %>
+      display: none;
+      <% end %>
+    }
+
+    input#input_apiKey {
+      <% if GrapeSwaggerRails.options.hide_api_key_input %>
+      display: none;
+      <% end %>
+    }
+  </style>
 
 </body>
 
