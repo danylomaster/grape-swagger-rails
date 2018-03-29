@@ -69,7 +69,7 @@
   <%= javascript_include_tag 'grape_swagger_rails/application.js' %>
 <script>
 window.onload = function() {
-	  var options = JSON.parse(document.getElementsByTagName("html")[0].getAttribute('data-swagger-options'));
+	var options = $("html").data('swagger-options');
 
     var headers = {};
     <% GrapeSwaggerRails.options.headers.each_with_index do |(key, value), index| %>
