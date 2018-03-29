@@ -99,7 +99,7 @@ window.onload = function() {
   })
 
       function getApiKeyAuthorization() {
-      var key = $('#swagger-ui > section > div.swagger-ui > div > div.scheme-container > section > div > div > div.modal-ux > div > div > div.modal-ux-content > div > form > div:nth-child(1) > div > div:nth-child(5) > section > input[type="text"]')[0].value;
+      var key = $('#input_apiKey')[0].value;
 
       if (key && key.trim() != "") {
         if (options.api_auth == 'basic') {
@@ -118,7 +118,7 @@ window.onload = function() {
       }
     }
 
-    $('#swagger-ui > section > div.swagger-ui > div > div.scheme-container > section > div > div > div.modal-ux > div > div > div.modal-ux-content > div > form > div:nth-child(1) > div > div:nth-child(5) > section > input[type="text"]').change(addApiKeyAuthorization);
+    $('#input_apiKey').change(addApiKeyAuthorization);
 
   window.ui = ui
 }
