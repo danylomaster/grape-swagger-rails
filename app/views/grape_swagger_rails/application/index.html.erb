@@ -69,11 +69,22 @@
   <%= javascript_include_tag 'grape_swagger_rails/application.js' %>
 <script>
 window.onload = function() {
+	  var options = JSON.parse(document.getElementsByTagName("html")[0].getAttribute('data-swagger-options'));
 
+    var headers = {};
+    <% GrapeSwaggerRails.options.headers.each_with_index do |(key, value), index| %>
+      <%=raw "headers.header_#{index} = new SwaggerClient.ApiKeyAuthorization('#{CGI.escapeHTML(key)}', '#{CGI.escapeHTML(value)}', 'header');" %>
+    <% end %>
+
+    <% if GrapeSwaggerRails.options.api_key_default_value.try(:strip).present? &&
+          GrapeSwaggerRails.options.headers['Authorization'].blank? %>
+      <% headers_count = GrapeSwaggerRails.options.headers.count %>
+      <%= raw "headers.header_#{headers_count} = getApiKeyAuthorization();" %>
+    <% end %>
 	
   // Build a system
   const ui = SwaggerUIBundle({
-    url: "http://petstore.swagger.io/v2/swagger.json",
+    url: options.app_url + options.url,
     dom_id: '#swagger-ui',
     deepLinking: true,
     presets: [
