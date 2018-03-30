@@ -76,6 +76,14 @@ window.onload = function() {
     url: options.app_url + options.url,
     dom_id: '#swagger-ui',
 	validatorUrl: null,
+	requestInterceptor: (req) => {
+	  // if(req.loadSpec) {
+	  // if(options.api_key_default_value && options.api_key_name) {
+	  if(req) {
+		req.headers[options.api_key_name] = options.api_key_default_value
+	  }
+	  return req
+	},
     deepLinking: true,
     presets: [
       SwaggerUIBundle.presets.apis,
@@ -88,7 +96,7 @@ window.onload = function() {
 	onComplete: function() {
       // Here, "basicAuth" and "apiKey" are the security scheme names/keys in the "securityDefinitions" collection
       // ui.preauthorizeBasic("basicAuth", "username", "password");
-      if (options.api_key_default_value && options.api_key_name)ui.preauthorizeApiKey(options.api_key_name, options.api_key_default_value);
+      if (options.api_key_default_value && options.api_key_name) ui.preauthorizeApiKey(options.api_key_name, options.api_key_default_value);
     }
   })
 
