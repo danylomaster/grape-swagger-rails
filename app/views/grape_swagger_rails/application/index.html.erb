@@ -71,17 +71,6 @@
 window.onload = function() {
 	var options = $("html").data('swagger-options');
 
-    var headers = {};
-    <% GrapeSwaggerRails.options.headers.each_with_index do |(key, value), index| %>
-      <%=raw "headers.header_#{index} = new SwaggerClient.ApiKeyAuthorization('#{CGI.escapeHTML(key)}', '#{CGI.escapeHTML(value)}', 'header');" %>
-    <% end %>
-
-    <% if GrapeSwaggerRails.options.api_key_default_value.try(:strip).present? &&
-          GrapeSwaggerRails.options.headers['Authorization'].blank? %>
-      <% headers_count = GrapeSwaggerRails.options.headers.count %>
-      <%= raw "headers.header_#{headers_count} = getApiKeyAuthorization();" %>
-    <% end %>
-	
   // Build a system
   const ui = SwaggerUIBundle({
     url: options.app_url + options.url,
@@ -95,48 +84,17 @@ window.onload = function() {
     plugins: [
       SwaggerUIBundle.plugins.DownloadUrl
     ],
-    layout: "StandaloneLayout"
+    layout: "StandaloneLayout",
+	onComplete: function() {
+      // Here, "basicAuth" and "apiKey" are the security scheme names/keys in the "securityDefinitions" collection
+      // ui.preauthorizeBasic("basicAuth", "username", "password");
+      if (options.api_key_default_value && options.api_key_name)ui.preauthorizeApiKey(options.api_key_name, options.api_key_default_value);
+    }
   })
-
-      function getApiKeyAuthorization() {
-      var key = $('#input_apiKey')[0].value;
-
-      if (key && key.trim() != "") {
-        if (options.api_auth == 'basic') {
-          key = "Basic " + Base64.encode(key);
-        } else if (options.api_auth == 'bearer') {
-          key = "Bearer " + key
-        }
-        return new SwaggerClient.ApiKeyAuthorization(options.api_key_name, key, options.api_key_type);
-      }
-    }
-
-    function addApiKeyAuthorization() {
-      var apiKeyAuthorization = getApiKeyAuthorization();
-      if (apiKeyAuthorization) {
-        window.swaggerUi.api.clientAuthorizations.add("key", apiKeyAuthorization);
-      }
-    }
-
-    $('#input_apiKey').change(addApiKeyAuthorization);
 
   window.ui = ui
 }
 </script>
-  <style>
-    input#input_baseUrl, a#explore.exploreBtn {
-      <% if GrapeSwaggerRails.options.hide_url_input %>
-      display: none;
-      <% end %>
-    }
-
-    input#input_apiKey {
-      <% if GrapeSwaggerRails.options.hide_api_key_input %>
-      display: none;
-      <% end %>
-    }
-  </style>
-
 </body>
 
 </html>
