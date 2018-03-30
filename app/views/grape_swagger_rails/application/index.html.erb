@@ -75,15 +75,18 @@ window.onload = function() {
   const ui = SwaggerUIBundle({
     url: options.app_url + options.url,
     dom_id: '#swagger-ui',
-	validatorUrl: null,
-	requestInterceptor: (req) => {
-	  // if(req.loadSpec) {
-	  // if(options.api_key_default_value && options.api_key_name) {
-	  if(req) {
-		req.headers[options.api_key_name] = options.api_key_default_value
-	  }
-	  return req
-	},
+    validatorUrl: null,
+    requestInterceptor: (req) => {
+      // if(options.api_key_default_value && options.api_key_name) {
+      // if(req.loadSpec) {
+      if(req) {
+        // var hash = btoa("myUser" + ":" + "myPassword") // base64
+        // req.headers.Authorization = "Basic " + hash
+        // req.headers[options.api_key_name] = options.api_key_default_value
+          req.headers.Authorization = options.api_key_default_value
+        }
+      return req
+    },
     deepLinking: true,
     presets: [
       SwaggerUIBundle.presets.apis,
