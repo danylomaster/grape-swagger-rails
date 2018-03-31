@@ -80,10 +80,10 @@ window.onload = function() {
       // if(options.api_key_default_value && options.api_key_name) {
       // if(req.loadSpec) {
       if(req) {
-        // var hash = btoa("myUser" + ":" + "myPassword") // base64
-        // req.headers.Authorization = "Basic " + hash
-        // req.headers[options.api_key_name] = options.api_key_default_value
-          req.headers.Authorization = options.api_key_default_value
+          // var hash = btoa("myUser" + ":" + "myPassword") // base64
+          // req.headers.Authorization = "Basic " + hash
+          req.headers[options.api_key_name] = options.api_key_default_value
+          // req.headers.Authorization = options.api_key_default_value
         }
       return req
     },
